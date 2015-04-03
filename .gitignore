@@ -1,4 +1,4 @@
-# Byte-compiled / optimized / DLL files
+i# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 
@@ -54,3 +54,4 @@ doc/_build/
 
 *.sublime-workspace
 .ipynb_checkpoints
+.idea/
