@@ -1,5 +1,6 @@
 import asyncio
 import struct
+import socket
 from . import spec
 from . import frames
 from .routing import Dispatcher
@@ -15,6 +16,18 @@ class AMQP(asyncio.Protocol):
 
     def connection_made(self, transport):
         self.transport = transport
+
+        # The following code will add the TCP_NODELAY option to the socket.
+        # This option will disable Nagle's algorithm by default.
+        # See http://www.stuartcheshire.org/papers/nagledelayedack/
+        # There are legitimate reasons to want Nagle's Algorithm activated,
+        # but for AMQP you probably want it disabled. Plus, we are making this
+        # change only to AMQP sockets.
+        transport.pause_reading()
+        raw_sock = transport.get_extra_info('socket', default=None)
+        if raw_sock:
+            raw_sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+        transport.resume_reading()
 
     def data_received(self, data):
         while data:
