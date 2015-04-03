@@ -90,6 +90,8 @@ class LongLong(int):
 
 class ShortStr(str):
     def __new__(cls, value):
+        if isinstance(value, int):
+            value = str(value)
         if len(value) > MAX_OCTET:
             raise TypeError('Could not construct a ShortStr from value {}'.format(value))
         return super().__new__(cls, value)
